@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment } from "react";
+import { useQuery, gql } from "@apollo/client";
+
+const ALL_STARSHIPS = gql`
+  {
+    starships {
+      id
+      name
+    }
+  }
+`;
 
 function App() {
+  const { loading, error, data } = useQuery(ALL_STARSHIPS);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Whoops... something is wrong!</p>;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <h2>Star Wars Spaceships</h2>
+      {data.starships.map((starship, id) => {
+        return <p key={id}>{starship.name}</p>;
+      })}
+    </Fragment>
   );
 }
 
